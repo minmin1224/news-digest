@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>ニュースダイジェスト | 気になるニュースだけ、要点から。</title>
 <meta name="description" content="NHKニュースをカテゴリ別に要約表示。気になった記事は元記事の全文へワンタップ。" />
+<link rel="icon" type="image/png" href="./icons/icon.png" />
 <style>
   :root {
     --bg: #0f1115;
@@ -32,7 +33,9 @@
     text-align: center;
     border-bottom: 1px solid var(--card-border);
   }
-  header.site-header .logo { font-size: 1.15rem; font-weight: bold; }
+  header.site-header .logo { font-size: 1.15rem; font-weight: bold; display: flex; align-items: center; justify-content: center; gap: 8px; }
+  header.site-header .logo img { width: 28px; height: 28px; border-radius: 8px; }
+  .hero .icon img { width: 88px; height: 88px; border-radius: 20px; box-shadow: 0 8px 24px rgba(0,0,0,0.35); }
 
   .hero {
     text-align: center;
@@ -165,12 +168,12 @@
 <body>
 
   <header class="site-header">
-    <div class="logo">📰 ニュースダイジェスト</div>
+    <div class="logo"><img src="./icons/icon.png" alt="" />ニュースダイジェスト</div>
   </header>
 
   <section class="hero">
     <div class="wrap">
-      <div class="icon">📰</div>
+      <div class="icon"><img src="./icons/icon.png" alt="ニュースダイジェスト アイコン" /></div>
       <h1>気になるニュースだけ、要点から。</h1>
       <p class="lead">
         NHKニュースをカテゴリ別に自動収集し、注目の3件を要約付きで表示するシンプルなニュースビューアです。<br />

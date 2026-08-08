@@ -24,7 +24,8 @@ body {
   border-bottom: 1px solid var(--card-border);
 }
 
-.app-header h1 { margin: 0 0 6px; font-size: 1.6rem; }
+.app-header h1 { margin: 0 0 6px; font-size: 1.6rem; display: flex; align-items: center; justify-content: center; gap: 10px; }
+.app-icon { width: 32px; height: 32px; border-radius: 8px; vertical-align: middle; }
 .subtitle { margin: 0; color: var(--text-dim); }
 .notice { margin: 8px auto 0; max-width: 640px; font-size: 0.78rem; color: var(--text-dim); line-height: 1.5; }
 .back-link { margin: 12px 0 0; font-size: 0.8rem; }
