@@ -1,0 +1,287 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>ニュースダイジェスト | 気になるニュースだけ、要点から。</title>
+<meta name="description" content="NHKニュースをカテゴリ別に要約表示。気になった記事は元記事の全文へワンタップ。" />
+<style>
+  :root {
+    --bg: #0f1115;
+    --card-bg: #1a1d24;
+    --card-border: #2a2e37;
+    --text: #eef0f3;
+    --text-dim: #9aa1ac;
+    --accent: #4f8cff;
+    --accent-soft: rgba(79, 140, 255, 0.15);
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0;
+    font-family: "Hiragino Kaku Gothic ProN", "Yu Gothic", "Meiryo", sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.7;
+  }
+  a { color: var(--accent); }
+  .wrap { max-width: 880px; margin: 0 auto; padding: 0 20px; }
+
+  header.site-header {
+    padding: 18px 0;
+    text-align: center;
+    border-bottom: 1px solid var(--card-border);
+  }
+  header.site-header .logo { font-size: 1.15rem; font-weight: bold; }
+
+  .hero {
+    text-align: center;
+    padding: 64px 20px 48px;
+  }
+  .hero .icon { font-size: 3rem; }
+  .hero h1 {
+    font-size: clamp(1.6rem, 4vw, 2.3rem);
+    margin: 12px 0 14px;
+  }
+  .hero p.lead {
+    color: var(--text-dim);
+    max-width: 560px;
+    margin: 0 auto 30px;
+    font-size: 1.02rem;
+  }
+  .cta-row { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+
+  .btn {
+    display: inline-block;
+    text-decoration: none;
+    padding: 13px 28px;
+    border-radius: 999px;
+    font-size: 0.95rem;
+    font-weight: bold;
+  }
+  .btn-primary { background: var(--accent); color: #fff; }
+  .btn-primary:hover { opacity: 0.9; }
+  .btn-secondary { background: transparent; border: 1px solid var(--card-border); color: var(--text); }
+  .btn-secondary:hover { border-color: var(--accent); color: var(--accent); }
+
+  section { padding: 50px 0; }
+  section h2 {
+    text-align: center;
+    font-size: 1.4rem;
+    margin: 0 0 30px;
+  }
+
+  .features {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 16px;
+  }
+  .feature-card {
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 14px;
+    padding: 22px 18px;
+  }
+  .feature-card .emoji { font-size: 1.6rem; margin-bottom: 10px; display: block; }
+  .feature-card h3 { margin: 0 0 8px; font-size: 1rem; }
+  .feature-card p { margin: 0; color: var(--text-dim); font-size: 0.88rem; }
+
+  /* --- プレビュー(モック) --- */
+  .preview-frame {
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 16px;
+    padding: 22px;
+    max-width: 640px;
+    margin: 0 auto;
+  }
+  .preview-tabs { display: flex; gap: 8px; margin-bottom: 18px; flex-wrap: wrap; }
+  .preview-tab {
+    font-size: 0.75rem;
+    border-radius: 999px;
+    padding: 5px 12px;
+    border: 1px solid var(--card-border);
+    color: var(--text-dim);
+  }
+  .preview-tab.active { background: var(--accent); color: #fff; border-color: var(--accent); }
+  .preview-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 12px; }
+  .preview-card {
+    background: #14161c;
+    border: 1px solid var(--card-border);
+    border-radius: 10px;
+    padding: 14px;
+    text-align: left;
+  }
+  .preview-badge {
+    font-size: 0.62rem;
+    font-weight: bold;
+    color: var(--accent);
+    background: var(--accent-soft);
+    padding: 2px 7px;
+    border-radius: 999px;
+    display: inline-block;
+    margin-bottom: 8px;
+  }
+  .preview-card h4 { margin: 0 0 6px; font-size: 0.85rem; line-height: 1.4; }
+  .preview-card p { margin: 0; font-size: 0.72rem; color: var(--text-dim); }
+
+  .steps { counter-reset: step; max-width: 560px; margin: 0 auto; }
+  .step {
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+    margin-bottom: 20px;
+  }
+  .step .num {
+    flex: 0 0 auto;
+    width: 30px; height: 30px;
+    border-radius: 50%;
+    background: var(--accent-soft);
+    color: var(--accent);
+    font-weight: bold;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.9rem;
+  }
+  .step p { margin: 4px 0 0; color: var(--text-dim); font-size: 0.9rem; }
+  .step strong { font-size: 0.98rem; }
+
+  .install-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; }
+  .install-card { background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 14px; padding: 20px; }
+  .install-card h3 { margin: 0 0 10px; font-size: 0.95rem; }
+  .install-card ol { margin: 0; padding-left: 20px; color: var(--text-dim); font-size: 0.85rem; }
+  .install-card li { margin-bottom: 6px; }
+
+  .final-cta { text-align: center; }
+
+  footer {
+    border-top: 1px solid var(--card-border);
+    padding: 26px 0 40px;
+    text-align: center;
+    color: var(--text-dim);
+    font-size: 0.78rem;
+  }
+</style>
+</head>
+<body>
+
+  <header class="site-header">
+    <div class="logo">📰 ニュースダイジェスト</div>
+  </header>
+
+  <section class="hero">
+    <div class="wrap">
+      <div class="icon">📰</div>
+      <h1>気になるニュースだけ、要点から。</h1>
+      <p class="lead">
+        NHKニュースをカテゴリ別に自動収集し、注目の3件を要約付きで表示するシンプルなニュースビューアです。<br />
+        続きが気になったら、そのまま元記事の全文へ移動できます。
+      </p>
+      <div class="cta-row">
+        <a class="btn btn-primary" href="./app/index.html">アプリを起動する →</a>
+        <a class="btn btn-secondary" href="#features">できることを見る</a>
+      </div>
+    </div>
+  </section>
+
+  <section id="features">
+    <div class="wrap">
+      <h2>できること</h2>
+      <div class="features">
+        <div class="feature-card">
+          <span class="emoji">🗂️</span>
+          <h3>8カテゴリで一覧</h3>
+          <p>主要・社会・政治・経済・国際・科学医療・文化エンタメ・スポーツを1画面でチェックできます。</p>
+        </div>
+        <div class="feature-card">
+          <span class="emoji">✂️</span>
+          <h3>要約でサクッと把握</h3>
+          <p>各カテゴリの注目ニュース トップ3を、短い要約付きのカードで表示します。</p>
+        </div>
+        <div class="feature-card">
+          <span class="emoji">📖</span>
+          <h3>気になったら全文へ</h3>
+          <p>カードをタップすると詳細を表示。「全文を読む」からNHKの元記事にワンタップで移動できます。</p>
+        </div>
+        <div class="feature-card">
+          <span class="emoji">🔄</span>
+          <h3>自動更新</h3>
+          <p>裏側で約20分おきにニュースデータを自動取得。開くたびに最新の内容が反映されます。</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="wrap">
+      <h2>画面イメージ</h2>
+      <div class="preview-frame">
+        <div class="preview-tabs">
+          <span class="preview-tab active">すべて</span>
+          <span class="preview-tab">社会</span>
+          <span class="preview-tab">政治</span>
+          <span class="preview-tab">経済</span>
+          <span class="preview-tab">国際</span>
+        </div>
+        <div class="preview-grid">
+          <div class="preview-card">
+            <span class="preview-badge">TOP 1</span>
+            <h4>(サンプル)大型台風、週末にかけて接近へ</h4>
+            <p>気象庁は不要不急の外出を控えるよう呼びかけています。</p>
+          </div>
+          <div class="preview-card">
+            <span class="preview-badge">TOP 2</span>
+            <h4>(サンプル)経済対策の新法案が閣議決定</h4>
+            <p>物価高対策を柱とした関連予算案が今国会に提出される見通しです。</p>
+          </div>
+          <div class="preview-card">
+            <span class="preview-badge">TOP 3</span>
+            <h4>(サンプル)国際会議が来月に開催決定</h4>
+            <p>主要国の首脳が一堂に会し、気候変動対策について協議します。</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="wrap">
+      <h2>使い方</h2>
+      <div class="steps">
+        <div class="step">
+          <div class="num">1</div>
+          <div><strong>「アプリを起動する」を押す</strong><p>ブラウザだけで動くので、インストール不要ですぐに使えます。</p></div>
+        </div>
+        <div class="step">
+          <div class="num">2</div>
+          <div><strong>カテゴリタブで絞り込む</strong><p>気になるジャンルだけを表示できます。</p></div>
+        </div>
+        <div class="step">
+          <div class="num">3</div>
+          <div><strong>カードをタップして要約を確認</strong><p>詳細ウィンドウで要約と更新時刻が確認できます。</p></div>
+        </div>
+        <div class="step">
+          <div class="num">4</div>
+          <div><strong>続きが気になったら「全文を読む」</strong><p>NHKニュースの元記事ページが新しいタブで開きます。</p></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="final-cta">
+    <div class="wrap">
+      <h2>さっそく試してみる</h2>
+      <a class="btn btn-primary" href="./app/index.html">アプリを起動する →</a>
+    </div>
+  </section>
+
+  <footer>
+    <div class="wrap">
+      <p>
+        表示しているニュースはNHKニュースの公開RSSフィードから取得しています。「アクセス数ランキング」ではなく、各カテゴリの最新配信上位3件を表示しています。<br />
+        記事本文はNHKの元記事ページでお読みください。データは約20分おきに自動更新されます。
+      </p>
+    </div>
+  </footer>
+
+</body>
+</html>

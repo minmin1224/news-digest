@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>ニュースダイジェスト</title>
+<link rel="stylesheet" href="./style.css" />
+</head>
+<body>
+  <header class="app-header">
+    <h1>📰 ニュースダイジェスト</h1>
+    <p class="subtitle">カテゴリ別・注目ニュース トップ3の要約</p>
+    <p class="notice">
+      ※ NHKニュースの各カテゴリ最新配信から上位3件を、約20分おきに自動更新して表示しています（アクセス数順のランキングデータではありません）
+    </p>
+    <div class="toolbar">
+      <span id="updated-at" class="updated-at"></span>
+      <button id="refresh-btn">🔄 更新</button>
+    </div>
+    <p class="back-link"><a href="../index.html">← 紹介ページへ戻る</a></p>
+  </header>
+
+  <nav id="category-tabs" class="category-tabs"></nav>
+
+  <main id="content" class="content">
+    <p class="loading">読み込み中...</p>
+  </main>
+
+  <div id="modal" class="modal hidden">
+    <div class="modal-content">
+      <button id="modal-close" class="modal-close">×</button>
+      <h2 id="modal-title"></h2>
+      <p id="modal-meta"></p>
+      <p id="modal-desc"></p>
+      <a id="modal-link" href="#" target="_blank" rel="noopener noreferrer" class="full-text-btn">元記事の全文を読む ↗</a>
+    </div>
+  </div>
+
+  <script src="./app.js"></script>
+</body>
+</html>
